@@ -1,7 +1,7 @@
 # PINP
 PINP Is Not msPaint
 
-<img src="readme_assets/image.png"></img>
+<img src="readme_assets/image2.png"></img>
 
 ## Install
 
