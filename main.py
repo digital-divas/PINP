@@ -1,23 +1,17 @@
 import pygame
+from color_picker import draw_color_picker
 
 pygame.init()
 
-white = (255, 255, 255)
-black = (0, 0, 0)
-
-red = (255, 0, 0)
-green = (0, 255, 0)
-blue = (0, 0, 255)
-
 gameDisplay = pygame.display.set_mode((800, 600))
-gameDisplay.fill(black)
+gameDisplay.fill((255, 255, 255))
 
 drawing = False
-color = (255, 255, 255)
+color = (0, 0, 0)
 last_pos = (0, 0)
 
 PENCIL = 0
-tool = 1
+tool = PENCIL
 FILL = 1
 
 
@@ -378,18 +372,24 @@ while True:
 
     for event in pygame.event.get():
 
-        if event.type == pygame.KEYDOWN and event.key == 49:
-            tool = PENCIL
-        elif event.type == pygame.KEYDOWN and event.key == 50:
-            tool = FILL
+        try:
 
-        if tool == PENCIL:
-            pencil_events(event)
-        elif tool == FILL:
-            fill_events(event)
+            if event.type == pygame.KEYDOWN and event.key == 49:
+                tool = PENCIL
+            elif event.type == pygame.KEYDOWN and event.key == 50:
+                tool = FILL
+
+            if tool == PENCIL:
+                pencil_events(event)
+            elif tool == FILL:
+                fill_events(event)
+        except AttributeError:
+            pass
 
         if event.type == pygame.QUIT:
             pygame.quit()
             quit()
+
+    draw_color_picker(gameDisplay)
 
     pygame.display.update()
