@@ -3,7 +3,8 @@ from color_picker import draw_color_picker
 
 pygame.init()
 
-gameDisplay = pygame.display.set_mode((800, 600))
+gameDisplay = pygame.display.set_mode((1280, 800), pygame.RESIZABLE)
+pygame.display.set_caption("PINP - PINP Is Not msPaint")
 gameDisplay.fill((255, 255, 255))
 
 drawing = False
@@ -378,6 +379,18 @@ while True:
                 tool = PENCIL
             elif event.type == pygame.KEYDOWN and event.key == 50:
                 tool = FILL
+            elif event.type == pygame.VIDEORESIZE:
+                #FIXME
+                print('resizing')
+                # There's some code to add back window content here.
+                # gameDisplay = pygame.display.set_mode((event.w, event.h), pygame.RESIZABLE)
+                old_surface_saved = gameDisplay
+                gameDisplay = pygame.display.set_mode((event.w, event.h),
+                                                pygame.RESIZABLE)
+                # On the next line, if only part of the window
+                # needs to be copied, there's some other options.
+                gameDisplay.blit(old_surface_saved, (0,0))
+                del old_surface_saved
 
             if tool == PENCIL:
                 pencil_events(event)
