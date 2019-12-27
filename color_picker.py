@@ -37,13 +37,18 @@ def draw_color_picker(screen):
 
     screen_height = screen.get_height()
     screen_width = screen.get_width()
+
+    left_margin = 55
+
+    # print(screen_height, screen_width)
+
     pygame.draw.rect(screen,(212,208,200),(0,screen_height-55,screen_width,55),0)
-    pygame.draw.rect(screen,(255,255,255),(3,screen_height-52,350,49),0)
+    pygame.draw.rect(screen,(255,255,255),(left_margin-3,screen_height-52,352,49),0)
 
     for index, default_color in enumerate(default_colors):
         if index % 2 == 0:
             
-            start_point = (5 + (index/2 * 5) + (index/2 * size_block) , screen_height - 5  - size_block - size_block - 5)
+            start_point = (left_margin + (index/2 * 5) + (index/2 * size_block) , screen_height - 5  - size_block - size_block - 5)
 
             pygame.draw.rect(
                 screen,
@@ -54,7 +59,7 @@ def draw_color_picker(screen):
 
         else:
 
-            start_point = (5 + ((index-1)/2 * 5) + ((index-1)/2 * size_block) , screen_height - 5  - size_block)
+            start_point = (left_margin + ((index-1)/2 * 5) + ((index-1)/2 * size_block) , screen_height - 5  - size_block)
 
             pygame.draw.rect(
                 screen,
