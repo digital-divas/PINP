@@ -33,6 +33,16 @@ default_colors = [
 
 size_block = 20
 
+primary_color = (0,0,0)
+secondary_color = (255,255,255)
+
+get_primary_color = lambda: primary_color
+get_secondary_color = lambda: secondary_color
+
+def set_primary_color(color):
+    global primary_color
+    primary_color = color
+
 def draw_color_picker(screen):
 
     screen_height = screen.get_height()
@@ -74,3 +84,5 @@ def draw_color_picker(screen):
 
         pygame.draw.line(screen, (212,208,200), (start_point[0] + size_block, start_point[1] + size_block), (start_point[0], start_point[1] + size_block))
         pygame.draw.line(screen, (212,208,200), (start_point[0] + size_block, start_point[1] + size_block), (start_point[0] + size_block, start_point[1] ))
+    
+    pygame.draw.rect(screen,get_primary_color(),(5,screen_height-50,size_block,size_block),0)
