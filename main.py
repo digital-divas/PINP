@@ -1,5 +1,5 @@
 import pygame
-from color_picker import draw_color_picker
+from color_picker import draw_color_picker, get_primary_color, get_secondary_color, set_primary_color, set_secondary_color
 
 pygame.init()
 
@@ -8,29 +8,34 @@ pygame.display.set_caption("PINP - PINP Is Not msPaint")
 gameDisplay.fill((255, 255, 255))
 
 drawing = False
-color = (0, 0, 0)
 last_pos = (0, 0)
 
 PENCIL = 0
 tool = PENCIL
 FILL = 1
 
+last_color = None
 
 def pencil_events(event):
-    global drawing, last_pos
+    global drawing, last_pos, last_color
 
     if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
         drawing = True
         last_pos = event.pos
+        last_color = get_primary_color()
+    if event.type == pygame.MOUSEBUTTONDOWN and event.button == 3:
+        drawing = True
+        last_pos = event.pos
+        last_color = get_secondary_color()
     if event.type == pygame.MOUSEBUTTONUP:
         drawing = False
 
     if drawing:
-        pygame.draw.line(gameDisplay, color, last_pos, event.pos, 1)
+        pygame.draw.line(gameDisplay, last_color, last_pos, event.pos, 1)
         last_pos = event.pos
 
 
-def recursive_draw(pos, original_color):
+def recursive_draw(pos, original_color, color):
     x, y = pos
 
     if x - 1 > 0 and gameDisplay.get_at((x - 1, y)) == original_color:
@@ -50,8 +55,7 @@ def recursive_draw(pos, original_color):
         recursive_draw((x, y + 1), original_color)
 
 
-def draw_to_left(pos, original_color):
-    global color
+def draw_to_left(pos, original_color, color):
 
     x, y = pos
 
@@ -65,8 +69,7 @@ def draw_to_left(pos, original_color):
             break
 
 
-def draw_to_up(pos, original_color):
-    global color
+def draw_to_up(pos, original_color, color):
 
     x, y = pos
 
@@ -78,9 +81,7 @@ def draw_to_up(pos, original_color):
             break
 
 
-def draw_to_down(pos, original_color):
-    global color
-
+def draw_to_down(pos, original_color, color):
     x, y = pos
 
     while True:
@@ -194,8 +195,8 @@ def is_left_empty(pos, original_color):
     return is_empty((x, y), original_color)
 
 
-def start(pos, original_color):
-    global color, mark, mark2, findloop, backtrack, mark_direction, mark2_direction, cur_direction
+def start(pos, original_color, color):
+    global mark, mark2, findloop, backtrack, mark_direction, mark2_direction, cur_direction
 
     x, y = pos
 
@@ -328,8 +329,8 @@ def turn_left():
         cur_direction = (-1, 0)
 
 
-def fill_events(event):
-    global color, backtrack, findloop
+def fill_events(event, color):
+    global backtrack, findloop
 
     if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
         original_color = gameDisplay.get_at(event.pos)
@@ -349,7 +350,7 @@ def fill_events(event):
             else:
                 break
 
-        x, y = start((x, y), original_color)
+        x, y = start((x, y), original_color, color)
 
         while x >= 0 and y >= 0:
             x, y = move_foward((x, y))
@@ -366,7 +367,7 @@ def fill_events(event):
                 turn_right()
                 x, y = move_foward((x, y))
 
-            x, y = start((x, y), original_color)
+            x, y = start((x, y), original_color, color)
 
 
 while True:
@@ -374,6 +375,11 @@ while True:
     for event in pygame.event.get():
 
         try:
+
+            if event.type == pygame.KEYDOWN and event.key == 51:
+                set_primary_color((255,0,0))
+            if event.type == pygame.KEYDOWN and event.key == 52:
+                set_secondary_color((0,0,255))
 
             if event.type == pygame.KEYDOWN and event.key == 49:
                 tool = PENCIL
@@ -395,7 +401,7 @@ while True:
             if tool == PENCIL:
                 pencil_events(event)
             elif tool == FILL:
-                fill_events(event)
+                fill_events(event, get_primary_color())
         except AttributeError:
             pass
 
