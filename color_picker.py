@@ -43,6 +43,11 @@ def set_primary_color(color):
     global primary_color
     primary_color = color
 
+def set_secondary_color(color):
+    global secondary_color
+    secondary_color = color
+
+
 def draw_color_picker(screen):
 
     screen_height = screen.get_height()
@@ -85,4 +90,5 @@ def draw_color_picker(screen):
         pygame.draw.line(screen, (212,208,200), (start_point[0] + size_block, start_point[1] + size_block), (start_point[0], start_point[1] + size_block))
         pygame.draw.line(screen, (212,208,200), (start_point[0] + size_block, start_point[1] + size_block), (start_point[0] + size_block, start_point[1] ))
     
+    pygame.draw.rect(screen,get_secondary_color(),(5+(size_block//2),screen_height-50 + (size_block//2),size_block,size_block),0)
     pygame.draw.rect(screen,get_primary_color(),(5,screen_height-50,size_block,size_block),0)

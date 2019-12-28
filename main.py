@@ -1,5 +1,5 @@
 import pygame
-from color_picker import draw_color_picker, get_primary_color, get_secondary_color, set_primary_color
+from color_picker import draw_color_picker, get_primary_color, get_secondary_color, set_primary_color, set_secondary_color
 
 pygame.init()
 
@@ -14,18 +14,24 @@ PENCIL = 0
 tool = PENCIL
 FILL = 1
 
+last_color = None
 
-def pencil_events(event, color):
-    global drawing, last_pos
+def pencil_events(event):
+    global drawing, last_pos, last_color
 
     if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
         drawing = True
         last_pos = event.pos
+        last_color = get_primary_color()
+    if event.type == pygame.MOUSEBUTTONDOWN and event.button == 3:
+        drawing = True
+        last_pos = event.pos
+        last_color = get_secondary_color()
     if event.type == pygame.MOUSEBUTTONUP:
         drawing = False
 
     if drawing:
-        pygame.draw.line(gameDisplay, color, last_pos, event.pos, 1)
+        pygame.draw.line(gameDisplay, last_color, last_pos, event.pos, 1)
         last_pos = event.pos
 
 
@@ -372,6 +378,8 @@ while True:
 
             if event.type == pygame.KEYDOWN and event.key == 51:
                 set_primary_color((255,0,0))
+            if event.type == pygame.KEYDOWN and event.key == 52:
+                set_secondary_color((0,0,255))
 
             if event.type == pygame.KEYDOWN and event.key == 49:
                 tool = PENCIL
@@ -391,7 +399,7 @@ while True:
                 del old_surface_saved
 
             if tool == PENCIL:
-                pencil_events(event, get_primary_color())
+                pencil_events(event)
             elif tool == FILL:
                 fill_events(event, get_primary_color())
         except AttributeError:
