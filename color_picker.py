@@ -31,6 +31,8 @@ default_colors = [
     (255, 128, 64),
 ]
 
+color_positions = []
+
 size_block = 20
 
 primary_color = (0,0,0)
@@ -49,6 +51,7 @@ def set_secondary_color(color):
 
 
 def draw_color_picker(screen):
+    global color_positions
 
     screen_height = screen.get_height()
     screen_width = screen.get_width()
@@ -83,6 +86,8 @@ def draw_color_picker(screen):
                 0,
             )
 
+        color_positions.append((start_point[0], start_point[1], start_point[0] + size_block, start_point[1] + size_block))
+
         
         pygame.draw.line(screen, (0,0,0), start_point, (start_point[0], start_point[1] + size_block))
         pygame.draw.line(screen, (0,0,0), start_point, (start_point[0]+ size_block, start_point[1] ))
@@ -92,3 +97,18 @@ def draw_color_picker(screen):
     
     pygame.draw.rect(screen,get_secondary_color(),(5+(size_block//2),screen_height-50 + (size_block//2),size_block,size_block),0)
     pygame.draw.rect(screen,get_primary_color(),(5,screen_height-50,size_block,size_block),0)
+
+def check_positions(pos, color_func):
+    for index, color_position in enumerate(color_positions):
+        if color_position[0] < pos[0] < color_position[2] and color_position[1] < pos[1] < color_position[3]:
+            color_func(default_colors[index])
+            break
+
+def check_picked_color(event):
+    global color_positions
+
+    if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+        check_positions(event.pos, set_primary_color)
+
+    if event.type == pygame.MOUSEBUTTONDOWN and event.button == 3:
+        check_positions(event.pos, set_secondary_color)
