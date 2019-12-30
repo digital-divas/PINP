@@ -1,5 +1,5 @@
 import pygame
-from color_picker import draw_color_picker, get_primary_color, get_secondary_color, set_primary_color, set_secondary_color
+from color_picker import draw_color_picker, get_primary_color, get_secondary_color, check_picked_color
 
 pygame.init()
 
@@ -376,11 +376,6 @@ while True:
 
         try:
 
-            if event.type == pygame.KEYDOWN and event.key == 51:
-                set_primary_color((255,0,0))
-            if event.type == pygame.KEYDOWN and event.key == 52:
-                set_secondary_color((0,0,255))
-
             if event.type == pygame.KEYDOWN and event.key == 49:
                 tool = PENCIL
             elif event.type == pygame.KEYDOWN and event.key == 50:
@@ -402,6 +397,8 @@ while True:
                 pencil_events(event)
             elif tool == FILL:
                 fill_events(event, get_primary_color())
+
+            check_picked_color(event)
         except AttributeError:
             pass
 
