@@ -1,4 +1,6 @@
 import pygame
+from ToolPicker import ToolPicker
+from Eraser import Eraser
 from color_picker import (
     draw_color_picker,
     get_primary_color,
@@ -83,6 +85,10 @@ def fill_events(event):
 
 while True:
 
+    draw_color_picker(gameDisplay)
+    eraser = Eraser(gameDisplay)
+    tool_picker = ToolPicker(gameDisplay, [eraser])
+
     for event in pygame.event.get():
 
         try:
@@ -111,13 +117,17 @@ while True:
                 fill_events(event)
 
             check_picked_color(event)
+
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                # TODO Assign according the functionality to the cursor 
+                # according to the tool selected
+                tool_picker.check_picked_tool(event)
+
         except AttributeError:
             pass
 
         if event.type == pygame.QUIT:
             pygame.quit()
             quit()
-
-    draw_color_picker(gameDisplay)
 
     pygame.display.update()
