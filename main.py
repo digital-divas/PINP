@@ -8,17 +8,19 @@ from color_picker import (
     check_picked_color,
 )
 
+
 def cvimage_to_pygame(image):
     """Convert cvimage into a pygame image"""
-    
+
     return pygame.image.frombuffer(image_rgb.tostring(), image_rgb.shape[1::-1], "RGB")
+
 
 pygame.init()
 
 image = cv.imread("test.jpg")
 image_rgb = cv.cvtColor(image, cv.COLOR_RGB2BGR)
 
-cv.rectangle(image, (0,0), (50,50), (0,0,0), -1)
+cv.rectangle(image, (0, 0), (50, 50), (0, 0, 0), -1)
 
 gameDisplay = pygame.display.set_mode((1280, 800), pygame.RESIZABLE)
 pygame.display.set_caption("PINP - PINP Is Not msPaint")
@@ -133,7 +135,27 @@ while True:
             pygame.quit()
             quit()
 
-    gameDisplay.blit(cvimage_to_pygame(image_rgb), (0,0))
+    gameDisplay.blit(cvimage_to_pygame(image_rgb), (3, 3))
+
+    # TODO: this need to be dynamic
+    pygame.draw.rect(gameDisplay, (28, 36, 56), (0, 0, 3, 3), 0)
+    pygame.draw.rect(gameDisplay, (255, 255, 255), (1, 1, 2, 2), 0)
+
+    pygame.draw.rect(gameDisplay, (28, 36, 56), (643, 0, 3, 3), 0)
+    pygame.draw.rect(gameDisplay, (255, 255, 255), (644, 1, 2, 2), 0)
+
+    pygame.draw.rect(gameDisplay, (28, 36, 56), (0, 403, 3, 3), 0)
+    pygame.draw.rect(gameDisplay, (255, 255, 255), (1, 404, 2, 2), 0)
+
+    pygame.draw.rect(gameDisplay, (28, 36, 56), (323, 0, 3, 3), 0)
+    pygame.draw.rect(gameDisplay, (255, 255, 255), (324, 1, 2, 2), 0)
+
+    pygame.draw.rect(gameDisplay, (28, 36, 56), (0, 203, 3, 3), 0)
+    pygame.draw.rect(gameDisplay, (255, 255, 255), (1, 204, 2, 2), 0)
+
+    pygame.draw.rect(gameDisplay, (28, 36, 56), (643, 403, 3, 3), 0)
+    pygame.draw.rect(gameDisplay, (28, 36, 56), (643, 203, 3, 3), 0)
+    pygame.draw.rect(gameDisplay, (28, 36, 56), (323, 403, 3, 3), 0)
 
     draw_color_picker(gameDisplay)
 
