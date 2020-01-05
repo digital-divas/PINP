@@ -1,4 +1,6 @@
+from cv2 import cv2 as cv
 import pygame
+import numpy as np
 from color_picker import (
     draw_color_picker,
     get_primary_color,
@@ -6,11 +8,21 @@ from color_picker import (
     check_picked_color,
 )
 
+def cvimage_to_pygame(image):
+    """Convert cvimage into a pygame image"""
+    
+    return pygame.image.frombuffer(image_rgb.tostring(), image_rgb.shape[1::-1], "RGB")
+
 pygame.init()
+
+image = cv.imread("test.jpg")
+image_rgb = cv.cvtColor(image, cv.COLOR_RGB2BGR)
+
+cv.rectangle(image, (0,0), (50,50), (0,0,0), -1)
 
 gameDisplay = pygame.display.set_mode((1280, 800), pygame.RESIZABLE)
 pygame.display.set_caption("PINP - PINP Is Not msPaint")
-gameDisplay.fill((255, 255, 255))
+gameDisplay.fill((128, 128, 128))
 
 drawing = False
 last_pos = (0, 0)
@@ -23,7 +35,7 @@ last_color = None
 
 
 def pencil_events(event):
-    global drawing, last_pos, last_color
+    global drawing, last_pos, last_color, image_rgb
 
     if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
         drawing = True
@@ -37,17 +49,20 @@ def pencil_events(event):
         drawing = False
 
     if drawing:
-        pygame.draw.line(gameDisplay, last_color, last_pos, event.pos, 1)
+        cv.line(image_rgb, last_pos, event.pos, last_color, 1)
         last_pos = event.pos
 
 
 def recursive_draw(pos, original_color, color):
+    global image_rgb
     x, y = pos
 
     theStack = [(x, y)]
 
-    width = gameDisplay.get_width()
-    height = gameDisplay.get_height()
+    height, width, _ = image_rgb.shape
+
+    original_color = [original_color[0], original_color[1], original_color[2]]
+    color = [color[0], color[1], color[2]]
 
     while len(theStack) > 0:
 
@@ -56,13 +71,13 @@ def recursive_draw(pos, original_color, color):
         if x < 0 or y < 0:
             continue
 
-        if x >= width or y > height:
+        if x >= width or y >= height:
             continue
 
-        if gameDisplay.get_at((x, y)) != original_color:
+        if not all(image_rgb[y][x] == original_color):
             continue
 
-        gameDisplay.set_at((x, y), color)
+        image_rgb[y][x] = color
 
         theStack.append((x + 1, y))  # right
         theStack.append((x - 1, y))  # left
@@ -117,6 +132,8 @@ while True:
         if event.type == pygame.QUIT:
             pygame.quit()
             quit()
+
+    gameDisplay.blit(cvimage_to_pygame(image_rgb), (0,0))
 
     draw_color_picker(gameDisplay)
 
