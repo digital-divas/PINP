@@ -1,5 +1,8 @@
 import pygame
 
+# Constraints
+COLOR_PICKER_HEIGHT = 55
+
 default_colors = [
     (0, 0, 0),
     (255, 255, 255),
@@ -56,11 +59,11 @@ def draw_color_picker(screen):
     screen_height = screen.get_height()
     screen_width = screen.get_width()
 
-    left_margin = 55
+    left_margin = 85
 
     # print(screen_height, screen_width)
 
-    pygame.draw.rect(screen,(212,208,200),(0,screen_height-55,screen_width,55),0)
+    pygame.draw.rect(screen,(212,208,200),(0,screen_height-COLOR_PICKER_HEIGHT,screen_width,COLOR_PICKER_HEIGHT),0)
     pygame.draw.rect(screen,(255,255,255),(left_margin-3,screen_height-52,352,49),0)
 
     for index, default_color in enumerate(default_colors):
@@ -95,8 +98,8 @@ def draw_color_picker(screen):
         pygame.draw.line(screen, (212,208,200), (start_point[0] + size_block, start_point[1] + size_block), (start_point[0], start_point[1] + size_block))
         pygame.draw.line(screen, (212,208,200), (start_point[0] + size_block, start_point[1] + size_block), (start_point[0] + size_block, start_point[1] ))
     
-    pygame.draw.rect(screen,get_secondary_color(),(5+(size_block//2),screen_height-50 + (size_block//2),size_block,size_block),0)
-    pygame.draw.rect(screen,get_primary_color(),(5,screen_height-50,size_block,size_block),0)
+    pygame.draw.rect(screen,get_secondary_color(),(25+(size_block//2),screen_height-45 + (size_block//2),size_block,size_block),0)
+    pygame.draw.rect(screen,get_primary_color(),(25,screen_height-45,size_block,size_block),0)
 
 def check_positions(pos, color_func):
     for index, color_position in enumerate(color_positions):

@@ -1,6 +1,7 @@
 from cv2 import cv2 as cv
 import pygame
-import numpy as np
+from ToolPicker import ToolPicker
+from Eraser import Eraser
 from color_picker import (
     draw_color_picker,
     get_primary_color,
@@ -51,13 +52,24 @@ def pencil_events(event):
         drawing = False
 
     if drawing:
-        cv.line(image_rgb, last_pos, event.pos, last_color, 1)
+        last_x, last_y = last_pos
+        x, y = event.pos
+
+        # TODO: replace these number with canvas margin
+        last_x -= 83
+        last_y -= 3
+        x -= 83
+        y -= 3
+        cv.line(image_rgb, (last_x, last_y), (x, y), last_color, 1)
         last_pos = event.pos
 
 
 def recursive_draw(pos, original_color, color):
     global image_rgb
     x, y = pos
+    # TODO: replace these number with canvas margin
+    x -= 83
+    y -= 3
 
     theStack = [(x, y)]
 
@@ -100,6 +112,10 @@ def fill_events(event):
 
 while True:
 
+    draw_color_picker(gameDisplay)
+    eraser = Eraser(gameDisplay)
+    tool_picker = ToolPicker(gameDisplay, [eraser])
+
     for event in pygame.event.get():
 
         try:
@@ -128,6 +144,12 @@ while True:
                 fill_events(event)
 
             check_picked_color(event)
+
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                # TODO Assign according the functionality to the cursor
+                # according to the tool selected
+                tool_picker.check_picked_tool(event)
+
         except AttributeError:
             pass
 
@@ -135,27 +157,29 @@ while True:
             pygame.quit()
             quit()
 
-    gameDisplay.blit(cvimage_to_pygame(image_rgb), (3, 3))
+    left_margin = 83
+
+    gameDisplay.blit(cvimage_to_pygame(image_rgb), (left_margin, 3))
 
     # TODO: this need to be dynamic
-    pygame.draw.rect(gameDisplay, (28, 36, 56), (0, 0, 3, 3), 0)
-    pygame.draw.rect(gameDisplay, (255, 255, 255), (1, 1, 2, 2), 0)
+    pygame.draw.rect(gameDisplay, (28, 36, 56), (left_margin - 3, 0, 3, 3), 0)
+    pygame.draw.rect(gameDisplay, (255, 255, 255), (left_margin - 2, 1, 2, 2), 0)
 
-    pygame.draw.rect(gameDisplay, (28, 36, 56), (643, 0, 3, 3), 0)
-    pygame.draw.rect(gameDisplay, (255, 255, 255), (644, 1, 2, 2), 0)
+    pygame.draw.rect(gameDisplay, (28, 36, 56), (640 + left_margin, 0, 3, 3), 0)
+    pygame.draw.rect(gameDisplay, (255, 255, 255), (640 + left_margin + 1, 1, 2, 2), 0)
 
-    pygame.draw.rect(gameDisplay, (28, 36, 56), (0, 403, 3, 3), 0)
-    pygame.draw.rect(gameDisplay, (255, 255, 255), (1, 404, 2, 2), 0)
+    pygame.draw.rect(gameDisplay, (28, 36, 56), (left_margin - 3, 403, 3, 3), 0)
+    pygame.draw.rect(gameDisplay, (255, 255, 255), (left_margin - 2, 404, 2, 2), 0)
 
-    pygame.draw.rect(gameDisplay, (28, 36, 56), (323, 0, 3, 3), 0)
-    pygame.draw.rect(gameDisplay, (255, 255, 255), (324, 1, 2, 2), 0)
+    pygame.draw.rect(gameDisplay, (28, 36, 56), (320 + left_margin, 0, 3, 3), 0)
+    pygame.draw.rect(gameDisplay, (255, 255, 255), (320 + left_margin + 1, 1, 2, 2), 0)
 
-    pygame.draw.rect(gameDisplay, (28, 36, 56), (0, 203, 3, 3), 0)
-    pygame.draw.rect(gameDisplay, (255, 255, 255), (1, 204, 2, 2), 0)
+    pygame.draw.rect(gameDisplay, (28, 36, 56), (left_margin - 3, 203, 3, 3), 0)
+    pygame.draw.rect(gameDisplay, (255, 255, 255), (left_margin - 2, 204, 2, 2), 0)
 
-    pygame.draw.rect(gameDisplay, (28, 36, 56), (643, 403, 3, 3), 0)
-    pygame.draw.rect(gameDisplay, (28, 36, 56), (643, 203, 3, 3), 0)
-    pygame.draw.rect(gameDisplay, (28, 36, 56), (323, 403, 3, 3), 0)
+    pygame.draw.rect(gameDisplay, (28, 36, 56), (640 + left_margin, 403, 3, 3), 0)
+    pygame.draw.rect(gameDisplay, (28, 36, 56), (640 + left_margin, 203, 3, 3), 0)
+    pygame.draw.rect(gameDisplay, (28, 36, 56), (320 + left_margin, 403, 3, 3), 0)
 
     draw_color_picker(gameDisplay)
 
