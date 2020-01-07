@@ -1,4 +1,6 @@
 # PINP
+<img src="https://img.shields.io/badge/python-3.7.6-blue"> <img src="https://img.shields.io/github/license/digital-divas/PINP">
+
 PINP Is Not msPaint
 
 <img src="readme_assets/image4.png"></img>
