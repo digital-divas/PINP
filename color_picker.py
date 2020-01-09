@@ -101,6 +101,8 @@ def draw_color_picker(screen):
     pygame.draw.rect(screen,get_secondary_color(),(25+(size_block//2),screen_height-45 + (size_block//2),size_block,size_block),0)
     pygame.draw.rect(screen,get_primary_color(),(25,screen_height-45,size_block,size_block),0)
 
+    pygame.draw.line(screen, (255,255,255), (0, screen_height - COLOR_PICKER_HEIGHT), (screen_width, screen_height - COLOR_PICKER_HEIGHT))
+
 def check_positions(pos, color_func):
     for index, color_position in enumerate(color_positions):
         if color_position[0] < pos[0] < color_position[2] and color_position[1] < pos[1] < color_position[3]:
