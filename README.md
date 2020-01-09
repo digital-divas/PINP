@@ -3,7 +3,7 @@
 
 PINP Is Not msPaint
 
-<img src="readme_assets/image4.png"></img>
+<img src="readme_assets/image5.png"></img>
 
 ## Install
 
