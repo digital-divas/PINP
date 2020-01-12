@@ -1,9 +1,9 @@
 import pygame
 from cv2 import cv2 as cv
 
-from ToolPicker import TOOLPICKER_WIDTH
-from menubar import MENUBAR_HEIGHT
-from color_picker import COLOR_PICKER_HEIGHT
+from models.ToolPicker import TOOLPICKER_WIDTH
+from models.Menubar import MENUBAR_HEIGHT
+from models.ColorPicker import COLOR_PICKER_HEIGHT
 
 def cvimage_to_pygame(image):
     """Convert cvimage into a pygame image"""
@@ -126,7 +126,6 @@ class Canvas(object):
         color = [color[0], color[1], color[2]]
 
         while len(theStack) > 0:
-
             x, y = theStack.pop()
 
             if x < 0 or y < 0:
