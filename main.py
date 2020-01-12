@@ -1,16 +1,14 @@
 from cv2 import cv2 as cv
 import pygame
-from ToolPicker import ToolPicker
-from Eraser import Eraser
-from color_picker import (
-    draw_color_picker,
-    get_primary_color,
-    get_secondary_color,
-    check_picked_color,
-)
+from models.ColorPicker import ColorPicker
+from models.Tool import Tool
+from models.ToolPicker import ToolPicker
+from models.Eraser import Eraser
+from models.Pencil import Pencil
+from models.PaintBucket import PaintBucket
 
-from menubar import MenuBar
-from canvas import Canvas
+from models.Menubar import MenuBar
+from models.Canvas import Canvas
 
 import subprocess
 
@@ -40,54 +38,34 @@ def save_frame(frame):
         pass
 
 
+EVENT_BUTTONS_TO_LISTEN = [1, 3]
+
 image_rgb = get_image("test.jpg")
 
 gameDisplay = pygame.display.set_mode((1280, 800), pygame.RESIZABLE)
 pygame.display.set_caption("PINP - PINP Is Not msPaint")
-
-drawing = False
-last_pos = (0, 0)
-
-PENCIL = 0
-tool = PENCIL
-FILL = 1
-
-last_color = None
-
-
-def pencil_events(event):
-    global drawing, last_pos, last_color, image_rgb, canvas
-
-    if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-        drawing = True
-        last_pos = event.pos
-        last_color = get_primary_color()
-    if event.type == pygame.MOUSEBUTTONDOWN and event.button == 3:
-        drawing = True
-        last_pos = event.pos
-        last_color = get_secondary_color()
-    if event.type == pygame.MOUSEBUTTONUP:
-        drawing = False
-
-    if drawing:
-        canvas.draw_line(last_pos, event.pos, last_color, 1)
-        last_pos = event.pos
-
-def fill_events(event):
-
-    if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-        canvas.draw_fill(event.pos, get_primary_color())
-
-    if event.type == pygame.MOUSEBUTTONDOWN and event.button == 3:
-        canvas.draw_fill(event.pos, get_secondary_color())
-
+tool = None
 menu_bar = MenuBar()
 canvas = Canvas()
+color_picker = ColorPicker()
+pencil = Pencil()
+paint_bucket = PaintBucket()
+eraser = Eraser()
+tool_picker = ToolPicker([eraser, pencil, paint_bucket])
+
 while True:
+
+    gameDisplay.fill((128, 128, 128))
+    menu_bar.draw(gameDisplay)
+    color_picker.draw(gameDisplay)
+    tool_picker.draw(gameDisplay)
+    canvas.render(gameDisplay, image_rgb)
 
     for event in pygame.event.get():
 
         try:
+            if tool and isinstance(tool, Tool):
+                tool.do_functionality(event, canvas, color_picker)
 
             # Ctrl + O
             if event.type == pygame.KEYDOWN and event.unicode == "\x0f": 
@@ -96,11 +74,7 @@ while True:
             if event.type == pygame.KEYDOWN and event.unicode == "\x13":
                 save_frame(image_rgb)
 
-            if event.type == pygame.KEYDOWN and event.key == 49:
-                tool = PENCIL
-            elif event.type == pygame.KEYDOWN and event.key == 50:
-                tool = FILL
-            elif event.type == pygame.VIDEORESIZE:
+            if event.type == pygame.VIDEORESIZE:
                 # FIXME
                 print("resizing")
                 # There's some code to add back window content here.
@@ -114,17 +88,12 @@ while True:
                 gameDisplay.blit(old_surface_saved, (0, 0))
                 del old_surface_saved
 
-            if tool == PENCIL:
-                pencil_events(event)
-            elif tool == FILL:
-                fill_events(event)
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button in EVENT_BUTTONS_TO_LISTEN:
+                checked_tool = tool_picker.check_picked_tool(event)
+                color_picker.check_picked_color(event)
 
-            check_picked_color(event)
-
-            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-                # TODO Assign according the functionality to the cursor
-                # according to the tool selected
-                tool_picker.check_picked_tool(event)
+                if checked_tool:
+                    tool = checked_tool
 
         except AttributeError:
             pass
@@ -132,16 +101,5 @@ while True:
         if event.type == pygame.QUIT:
             pygame.quit()
             quit()
-
-    gameDisplay.fill((128, 128, 128))
-
-    menu_bar.draw(gameDisplay)
-    draw_color_picker(gameDisplay)
-    eraser = Eraser(gameDisplay)
-    tool_picker = ToolPicker(gameDisplay, [eraser])
-
-    canvas.render(gameDisplay, image_rgb)
-
-    draw_color_picker(gameDisplay)
 
     pygame.display.update()
