@@ -1,2 +1,2 @@
 pygame==1.9.6
-opencv-python==4.1.2.30
+opencv-python==4.2.0.32
